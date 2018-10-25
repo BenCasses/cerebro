@@ -13,7 +13,7 @@ Requires: systemd
 Requires: /bin/sh 
 
 %define _with_gendersllnl                  --with-gendersllnl
-%define _with_gendersllnl_ion              --with-gendersllnl-ion
+%define _without_gendersllnl_ion           --without-gendersllnl-ion
 %define _without_genders                   --without-genders
 %define _without_hostsfile                 --without-hostsfile
 %define _with_boottime                     --with-boottime
@@ -41,13 +41,6 @@ Requires: gendersllnl
 %description clusterlist-gendersllnl
 Gendersllnl module
 
-%package clusterlist-gendersllnl-ion
-Summary: clusterlist gendersllnl-ion module
-Group: System Environment/Base
-Requires: cerebro
-Requires: gendersllnl
-%description clusterlist-gendersllnl-ion
-Gendersllnl-Ion module
 %package clusterlist-genders
 Summary: clusterlist genders module
 Group: System Environment/Base
