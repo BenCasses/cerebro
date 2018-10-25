@@ -8,6 +8,7 @@ License: GPL
 Source: @PROJECT@-@VERSION@.tar.gz
 BuildRoot: %{_tmppath}/@PROJECT@-@VERSION@
 
+
 BuildRequires: systemd
 Requires: systemd
 Requires: /bin/sh 
@@ -25,10 +26,62 @@ Cerebro is a collection of cluster monitoring tools and libraries.
 %{!?_with_shutdown: %{!?_without_shutdown: %define _without_shutdown --without-shutdown}}
 %{!?_with_updown: %{!?_without_updown: %define _with_updown --with-updown}}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%define _with_gendersllnl                  --with-gendersllnl
+%define _with_gendersllnl_ion              --with-gendersllnl-ion
+%define _without_genders                   --without-genders
+%define _without_hostsfile                 --without-hostsfile
+%define _with_boottime                     --with-boottime
+%define _without_loadavg                   --without-loadavg
+%define _without_memory                    --without-memory
+%define _without_network                   --without-network
+%define _without_slurm_state               --without-slurm-state
+%define _with_shutdown                     --with-shutdown
+%define _with_updown                       --with-updown
+%define _without_bgl_ciod                  --without-bgl-ciod
+
+
+
+
+
 %if %{?_with_debug:1}%{!?_with_debug:0}
 %define _enable_debug --enable-debug
 %endif
 
+
+%package clusterlist-gendersllnl
+Summary: clusterlist gendersllnl module
+Group: System Environment/Base
+Requires: cerebro
+Requires: gendersllnl
+%description clusterlist-gendersllnl
+Gendersllnl module
+
+%package clusterlist-gendersllnl-ion
+Summary: clusterlist gendersllnl-ion module
+Group: System Environment/Base
+Requires: cerebro
+Requires: gendersllnl
+%description clusterlist-gendersllnl-ion
+Gendersllnl-Ion module
 %package clusterlist-genders
 Summary: clusterlist genders module
 Group: System Environment/Base
@@ -93,11 +146,23 @@ Requires: cerebro
 %description event-updown
 Event module to monitor node up/down.
 
+%package monitor-bootlog
+Summary: bootlog module
+Group: System Environment/Base
+Requires: cerebro
+Requires: mysql-devel
+%description monitor-bootlog
+Bootlog monitoring module.
+
 %prep
 %setup  -q -n @PROJECT@-@VERSION@
 
 %build
 %configure --program-prefix=%{?_program_prefix:%{_program_prefix}} \
+           %{?_with_gendersllnl} \
+           %{?_without_gendersllnl} \
+           %{?_with_gendersllnl_ion} \
+           %{?_without_gendersllnl_ion} \
            %{?_with_genders} \
            %{?_without_genders} \
            %{?_with_hostsfile} \
@@ -116,6 +181,8 @@ Event module to monitor node up/down.
            %{?_without_shutdown} \
            %{?_with_updown} \
            %{?_without_updown} \
+           %{?_with_bootlog} \
+           %{?_without_bootlog} \
            %{?_with_cerebrod_speaker_only} \
            %{?_without_cerebrod_speaker_only} \
            %{?_with_cerebrod_no_threads} \
@@ -158,6 +225,11 @@ DESTDIR="$RPM_BUILD_ROOT" make install
 %endif
 
 
+%if %{?_with_gendersllnl_ion:1}%{!?_with_gendersllnl_ion:0}
+%files clusterlist-gendersllnl-ion
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_gendersllnl_ion.*
+%endif
 %if %{?_with_hostsfile:1}%{!?_with_hostsfile:0}
 %files clusterlist-hostsfile
 %defattr(-,root,root)
@@ -216,6 +288,12 @@ DESTDIR="$RPM_BUILD_ROOT" make install
 %files event-updown
 %defattr(700,root,root)
 %{_libdir}/cerebro/*cerebro_event_updown.*
+%endif
+
+%if %{?_with_gendersllnl_ion:1}%{!?_with_gendersllnl_ion:0}
+%files clusterlist-gendersllnl-ion
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_gendersllnl_ion.*
 %endif
 
 %posttrans
