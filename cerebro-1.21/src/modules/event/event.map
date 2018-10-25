@@ -1,6 +1,0 @@
-{
-  global:
-    event_module_info;
-  local:
-    *;
-};
