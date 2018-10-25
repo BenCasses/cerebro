@@ -1,0 +1,72 @@
+Cerebro is a collection of cluster monitoring tools and libraries.
+This project has been named after a part of the central nervous system
+to pay homage to the the Ganglia project
+(http://ganglia.sourceforge.net).  
+
+A heavily modified version of Ganglia was once used at Lawrence
+Livermore National Laboratory, but as needs and demands changed, it
+became necessary to develop a slightly different tool.
+
+Several of goals of Cerebro were to develop a monitoring tool that:
+
+- Interrupt the CPU less frequently (fixed in newer Ganglias).
+
+- Provide the user with a set of libraries, command-line tools, and a
+dynamic module interface that allow users to monitor new metrics
+without any re-compilation or configuration changes.
+
+- Provide a dynamic module interface that allows individual clusters to
+monitor different metrics based solely on the modules installed.
+
+- Provide a dynamic module interface which allows the libraries and
+tools to have knowledge of every node in the cluster.
+
+- Provide a dynamic module interface which allows the libraries and
+tools to automatically configure itself across a cluster.
+
+- Define what nodes exist within a cluster.
+
+- Remove XML overhead.
+
+At this point in time, the Cerebro project should not be mistaken for
+a full host monitoring system like Ganglia or Supermon, although it
+one day may be.  
+
+Future development goals include:
+
+- Security/access control features
+
+- Confined listening configuration.
+
+In order to install Cerebro, only the primary RPM (cerebro) need be
+installed.  However, additional features of Cerebro can be taken
+advantage of by installing a clusterlist module (cerebro-clusterlist)
+which allows Cerebro to recognize the hosts in the current cluster.
+
+The current clusterlist database formats supported are:
+
+Genders - Uses a genders database and the genders library to determine
+all nodes in the cluster. (http://sourceforge.net/projects/genders)
+
+Hostsfile - Uses a file that lists the hostname of every node in the
+cluster on a separate line.
+
+In addition, other modules can be installed for cluster configuration
+(cerebro-config), metric monitoring (cerebro-metric), or metric
+logging (cerebro-monitor).
+
+The following metric modules are currently publicly distributed:
+
+boottime - Monitor cluster node boottimes.
+
+shutdown - Monitor when nodes are shutdown gracefully
+
+bytesin, bytesout, packetsin, packetsout, rxerrs, txerrs - Monitor network usage
+
+memtotal, memused, memfree, swaptotal, swapused, swapfree - Monitor memory usage
+
+loadavg1, loadavg5, loadavg15 - Monitor load
+
+Albert Chu
+chu11@llnl.gov
+Lawrence Livermore National Laboratories    

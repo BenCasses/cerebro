@@ -1,0 +1,306 @@
+Name:    @PROJECT@ 
+Version: @VERSION@
+Release: @RELEASE@
+
+Summary: Cerebro cluster monitoring tools and libraries
+Group: System Environment/Base
+License: GPL
+Source: @PROJECT@-@VERSION@.tar.gz
+BuildRoot: %{_tmppath}/@PROJECT@-@VERSION@
+
+
+BuildRequires: systemd
+Requires: systemd
+Requires: /bin/sh 
+
+%description
+Cerebro is a collection of cluster monitoring tools and libraries.
+
+%{!?_with_genders: %{!?_without_genders: %define _without_genders --without-genders}}
+%{!?_with_hostsfile: %{!?_without_hostsfile: %define _with_hostsfile --with-hostsfile}}
+%{!?_with_boottime: %{!?_without_boottime: %define _with_boottime --with-boottime}}
+%{!?_with_loadavg: %{!?_without_loadavg: %define _with_loadavg --with-loadavg}}
+%{!?_with_memory: %{!?_without_memory: %define _with_memory --with-memory}}
+%{!?_with_network: %{!?_without_network: %define _with_network --with-network}}
+%{!?_with_slurm_state: %{!?_without_slurm_state: %define _without_slurm_state --without-slurm-state}}
+%{!?_with_shutdown: %{!?_without_shutdown: %define _without_shutdown --without-shutdown}}
+%{!?_with_updown: %{!?_without_updown: %define _with_updown --with-updown}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%define _with_gendersllnl                  --with-gendersllnl
+%define _with_gendersllnl_ion              --with-gendersllnl-ion
+%define _without_genders                   --without-genders
+%define _without_hostsfile                 --without-hostsfile
+%define _with_boottime                     --with-boottime
+%define _without_loadavg                   --without-loadavg
+%define _without_memory                    --without-memory
+%define _without_network                   --without-network
+%define _without_slurm_state               --without-slurm-state
+%define _with_shutdown                     --with-shutdown
+%define _with_updown                       --with-updown
+%define _without_bgl_ciod                  --without-bgl-ciod
+
+
+
+
+
+%if %{?_with_debug:1}%{!?_with_debug:0}
+%define _enable_debug --enable-debug
+%endif
+
+
+%package clusterlist-gendersllnl
+Summary: clusterlist gendersllnl module
+Group: System Environment/Base
+Requires: cerebro
+Requires: gendersllnl
+%description clusterlist-gendersllnl
+Gendersllnl module
+
+%package clusterlist-gendersllnl-ion
+Summary: clusterlist gendersllnl-ion module
+Group: System Environment/Base
+Requires: cerebro
+Requires: gendersllnl
+%description clusterlist-gendersllnl-ion
+Gendersllnl-Ion module
+%package clusterlist-genders
+Summary: clusterlist genders module
+Group: System Environment/Base
+Requires: cerebro
+Requires: genders >= 1.2
+%description clusterlist-genders
+Genders module
+
+%package clusterlist-hostsfile
+Summary: clusterlist hostsfile module
+Group: System Environment/Base
+Requires: cerebro
+%description clusterlist-hostsfile
+Hostsfile module
+
+%package metric-boottime
+Summary: boottime module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-boottime
+Metric module to monitor boottime.
+
+%package metric-loadavg
+Summary: loadavg module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-loadavg
+Metric modules to monitor loadavgs.
+
+%package metric-memory
+Summary: memory module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-memory
+Metric modules to monitor memory usage.
+
+%package metric-network
+Summary: network module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-network
+Metric modules to monitor network usage.
+
+%package metric-slurm-state
+Summary: slurm_state module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-slurm-state
+Metric module to monitor slurm_state.
+
+%package metric-shutdown
+Summary: shutdown module
+Group: System Environment/Base
+Requires: cerebro
+%description metric-shutdown
+Metric module to monitor graceful shutdowns.
+
+%package event-updown
+Summary: updown module
+Group: System Environment/Base
+Requires: cerebro
+%description event-updown
+Event module to monitor node up/down.
+
+%package monitor-bootlog
+Summary: bootlog module
+Group: System Environment/Base
+Requires: cerebro
+Requires: mysql-devel
+%description monitor-bootlog
+Bootlog monitoring module.
+
+%prep
+%setup  -q -n @PROJECT@-@VERSION@
+
+%build
+%configure --program-prefix=%{?_program_prefix:%{_program_prefix}} \
+           %{?_with_gendersllnl} \
+           %{?_without_gendersllnl} \
+           %{?_with_gendersllnl_ion} \
+           %{?_without_gendersllnl_ion} \
+           %{?_with_genders} \
+           %{?_without_genders} \
+           %{?_with_hostsfile} \
+           %{?_without_hostsfile} \
+           %{?_with_boottime} \
+           %{?_without_boottime} \
+           %{?_with_loadavg} \
+           %{?_without_loadavg} \
+           %{?_with_memory} \
+           %{?_without_memory} \
+           %{?_with_network} \
+           %{?_without_network} \
+           %{?_with_slurm_state} \
+           %{?_without_slurm_state} \
+           %{?_with_shutdown} \
+           %{?_without_shutdown} \
+           %{?_with_updown} \
+           %{?_without_updown} \
+           %{?_with_bootlog} \
+           %{?_without_bootlog} \
+           %{?_with_cerebrod_speaker_only} \
+           %{?_without_cerebrod_speaker_only} \
+           %{?_with_cerebrod_no_threads} \
+           %{?_without_cerebrod_no_threads} \
+           %{?_with_cerebro_config_file} \
+           %{?_enable_static_modules} \
+           %{?_enable_debug} \
+           --with-systemdsystemunitdir=%{_unitdir}
+make 
+
+%pretrans
+# stop cerebro before modification, remember if it was running
+if systemctl status cerebrod | grep running; then
+        touch %{_tmppath}/cerebrod_restart_sentinel_file
+        systemctl stop cerebrod
+fi
+
+%install
+rm -rf $RPM_BUILD_ROOT
+DESTDIR="$RPM_BUILD_ROOT" make install
+
+%files
+%defattr(-,root,root)
+%doc README NEWS ChangeLog DISCLAIMER DISCLAIMER.UC COPYING
+%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/cerebro.conf
+%{_includedir}/*
+%dir %{_libdir}/cerebro
+%{_libdir}/libcerebro*
+%{_mandir}/*
+%{_sbindir}/cerebrod
+%{_sbindir}/cerebro-stat
+%{_sbindir}/cerebro-admin
+%{_unitdir}/cerebrod.service
+%dir %attr(0755,root,root) %config %{_localstatedir}/run/cerebro
+
+%if %{?_with_genders:1}%{!?_with_genders:0}
+%files clusterlist-genders
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_genders.*
+%endif
+
+
+%if %{?_with_gendersllnl_ion:1}%{!?_with_gendersllnl_ion:0}
+%files clusterlist-gendersllnl-ion
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_gendersllnl_ion.*
+%endif
+%if %{?_with_hostsfile:1}%{!?_with_hostsfile:0}
+%files clusterlist-hostsfile
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_hostsfile.*
+%endif
+
+%if %{?_with_boottime:1}%{!?_with_boottime:0}
+%files metric-boottime
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_boottime.*
+%endif
+
+%if %{?_with_loadavg:1}%{!?_with_loadavg:0}
+%files metric-loadavg
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_loadavg1.*
+%{_libdir}/cerebro/*cerebro_metric_loadavg5.*
+%{_libdir}/cerebro/*cerebro_metric_loadavg15.*
+%endif
+
+%if %{?_with_memory:1}%{!?_with_memory:0}
+%files metric-memory
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_memtotal.*
+%{_libdir}/cerebro/*cerebro_metric_memused.*
+%{_libdir}/cerebro/*cerebro_metric_memfree.*
+%{_libdir}/cerebro/*cerebro_metric_swaptotal.*
+%{_libdir}/cerebro/*cerebro_metric_swapused.*
+%{_libdir}/cerebro/*cerebro_metric_swapfree.*
+%endif
+
+%if %{?_with_network:1}%{!?_with_network:0}
+%files metric-network
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_bytesin.*
+%{_libdir}/cerebro/*cerebro_metric_bytesout.*
+%{_libdir}/cerebro/*cerebro_metric_packetsin.*
+%{_libdir}/cerebro/*cerebro_metric_packetsout.*
+%{_libdir}/cerebro/*cerebro_metric_rxerrs.*
+%{_libdir}/cerebro/*cerebro_metric_txerrs.*
+%endif
+
+%if %{?_with_slurm_state:1}%{!?_with_slurm_state:0}
+%files metric-slurm-state
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_slurm_state.*
+%endif
+
+%if %{?_with_shutdown:1}%{!?_with_shutdown:0}
+%files metric-shutdown
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_metric_shutdown.*
+%endif
+
+%if %{?_with_updown:1}%{!?_with_updown:0}
+%files event-updown
+%defattr(700,root,root)
+%{_libdir}/cerebro/*cerebro_event_updown.*
+%endif
+
+%if %{?_with_gendersllnl_ion:1}%{!?_with_gendersllnl_ion:0}
+%files clusterlist-gendersllnl-ion
+%defattr(-,root,root)
+%{_libdir}/cerebro/*cerebro_clusterlist_gendersllnl_ion.*
+%endif
+
+%posttrans
+# do we need to restart it?
+if [ -f %{_tmppath}/cerebrod_restart_sentinel_file ]; then
+        systemctl daemon-reload
+        systemctl enable cerebrod
+        systemctl start cerebrod
+        rm %{_tmppath}/cerebrod_restart_sentinel_file
+fi

@@ -1,0 +1,119 @@
+#!/bin/sh
+# $Id: cerebrod,v 1.8 2009-02-26 18:18:58 chu11 Exp $
+#
+# chkconfig: - 95 5
+# description: cerebrod startup script
+#
+### BEGIN INIT INFO
+# Provides: cerebrod
+# Required-Start: $network $remote_fs $syslog
+# Required-Stop:  $network $remote_fs $syslog
+# Default-Start:  none
+# Default-Stop:   0 1 2 3 5 6
+# Description:    Start cerebrod-
+### END INIT INFO
+
+CEREBROD=/usr/sbin/cerebrod
+
+[ -f $CEREBROD ] || exit 1
+
+# Load Redhat or Suse appropriate libs
+if [ -f /etc/rc.d/init.d/functions ] ; then
+    . /etc/rc.d/init.d/functions
+    Xstart() {
+        daemon $CEREBROD
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cerebrod
+    }
+    Xstop() {
+        killproc cerebrod -TERM
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/cerebrod
+    }
+    Xstatus() {
+        status cerebrod
+        RETVAL=$?
+    }
+    Xrestart() {
+        $0 stop
+        $0 start
+        RETVAL=$?
+    }
+    Xcondrestart() {
+        if test -e /var/lock/subsys/cerebrod; then
+            $0 restart
+            RETVAL=$?
+        fi
+    }
+    Xexit() {
+        exit $RETVAL
+    }
+elif [ -f /etc/rc.status ] ; then
+    . /etc/rc.status
+    Xstart() {
+        startproc $CEREBROD
+        rc_status -v
+    }
+    Xstop() {
+        killproc -TERM $CEREBROD
+        rc_status -v
+    }
+    Xstatus() {
+        echo -n "Checking for cerebrod: "
+        checkproc $CEREBROD
+        rc_status -v
+    }
+    Xrestart() {
+        $0 stop
+        $0 start
+        rc_status
+    }
+    Xcondrestart() {
+        $0 status
+        if test $? = 0; then
+            $0 restart
+        else
+            rc_reset
+        fi
+        rc_status
+    }
+    Xexit() {
+        rc_exit
+    }
+else
+    echo "Unknown distribution type"
+    exit 1
+fi
+
+RETVAL=0
+
+case "$1" in
+    start)
+        echo -n "Starting cerebrod: "
+        Xstart
+        ;;
+    stop)
+        echo -n "Shutting down cerebrod: "
+        Xstop
+        ;;
+    restart|force-reload)
+        Xrestart
+        ;;
+    reload)
+        echo "Operation unsupported: $1"
+        exit 3
+        ;;
+    status)
+        Xstatus
+        ;;
+    condrestart|try-restart)
+        Xcondrestart
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|force-reload|status|condrestart|try-restart}"
+        exit 1
+esac
+
+Xexit

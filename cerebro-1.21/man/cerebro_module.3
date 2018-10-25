@@ -1,0 +1,195 @@
+.\"#############################################################################
+.\"$Id: cerebro_module.3.in,v 1.25 2010-02-02 01:01:20 chu11 Exp $
+.\"#############################################################################
+.\"  Copyright (C) 2007-2015 Lawrence Livermore National Security, LLC.
+.\"  Copyright (C) 2005-2007 The Regents of the University of California.
+.\"  Produced at Lawrence Livermore National Laboratory (cf, DISCLAIMER).
+.\"  Written by Albert Chu <chu11@llnl.gov>.
+.\"  UCRL-CODE-155989 All rights reserved.
+.\"
+.\"  This file is part of Cerebro, a collection of cluster monitoring tools
+.\"  and libraries.  For details, see <http://www.llnl.gov/linux/cerebro/>.
+.\"
+.\"  Cerebro is free software; you can redistribute it and/or modify it under
+.\"  the terms of the GNU General Public License as published by the Free
+.\"  Software Foundation; either version 2 of the License, or (at your option)
+.\"  any later version.
+.\"
+.\"  Cerebro is distributed in the hope that it will be useful, but WITHOUT ANY
+.\"  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+.\"  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+.\"  details.
+.\"
+.\"  You should have received a copy of the GNU General Public License along
+.\"  with Cerebro.  If not, see <http://www.gnu.org/licenses/>.
+.\"#############################################################################
+.TH CEREBRO_MODULE 3 "May 2005" "LLNL" "CEREBRO_MODULE"
+.SH "NAME" 
+cerebro_module \- Introduction to cerebro modules
+.SH CLUSTERLIST MODULES
+
+In order for
+.B Cerebro
+to be utilized at its full potential, a list of cluster nodes should be
+loaded.
+.B Cerebro
+can be used without a clusterlist, but some features will be
+diminished without one.  For example, there will be no way to
+determine the down nodes of the cluster if there is no knowledge of
+what all of the nodes in the cluster actually are.
+
+The list of cluster nodes can be specified in several formats by using
+one of a number of clusterlist modules.
+
+The following config modules are distributed:
+
+.if 0 \{
+genders - Reads and parses a generic genders database.  Can be passed
+a filename=value option to specify an non-default genders database
+location.
+
+\}
+
+.if 0 \{
+hostsfile - Reads and parses a file listing each cluster node on a
+separate line.  Can be passed a filename=value option to specify an
+non-default hostsfile database location.  The default hostsfile is
+located at /etc/hostsfile.
+\}
+
+Clusterlist modules are searched for in the
+.B Cerebro
+package library directory, /usr/lib64/cerebro, in the above order.
+If none of the above are found,
+.B cerebrod
+will search for other clusterlist modules.
+
+If a clusterlist module cannot be found, a default is assumed in which
+all messages received by the
+.B cerebrod(8)
+daemon make up the cluster.
+
+.SH "CONFIG MODULES"
+
+A configuration module format has been developed into
+.B Cerebro
+to alleviate the potential difficulty of configuring many different
+cluster nodes with different configuration files.  The configuration
+module loads an alternate set of default configuration options.  For
+example, if the cluster contains a cluster configuration database, a
+configuration module could be written to read from the cluster
+configuration database, and configure each node accordingly.
+
+The configuration loaded by a configuration module can be overrided by
+the options specified in the configuration file.
+
+The following config modules are distributed:
+
+No config modules are built.
+
+Configuration modules are searched for in the
+.B Cerebro
+package library directory, /usr/lib64/cerebro, in the above order.
+If none of the above are found,
+.B cerebrod
+will search for other configuration modules.
+
+If a configuration module cannot be found, the default configuration
+is assumed.
+
+.SH "METRIC MODULES"
+
+Metric modules provide a way for the
+.B cerebrod
+daemon to retrieve system data so that other additional
+system data can be propogated.  Multiple metric modules can be
+opened by a speaking
+.B cerebrod
+daemon.
+
+The following metric modules are distributed:
+
+.if 1 \{
+boottime - Retrieves the system boottime.
+\}
+
+.if 0 \{
+loadavg1 - Retrieves the system load average over the last minute.
+
+loadavg5 - Retrieves the system load average over the last five minutes.
+
+loadavg15 - Retrieves the system load average over the last fifteen minutes.
+\}
+
+.if 0 \{
+memtotal - Retrieves total system memory.
+
+memused - Retrieves used system memory.
+
+memfree - Retrieves free system memory.
+
+swaptotal - Retrieves total swap space.
+
+swapused - Retrieves used swap space.
+
+swapfree - Retrieves free swap space.
+\}
+
+.if 0 \{
+bytesin - Retrieves total bytes received on the network.
+
+bytesout - Retrieves total bytes sent on the network.
+
+packetsin - Retrieves total packets received on the network.
+
+packetsout - Retrieves total packets sent on the network.
+
+rxerrs - Retrieves total receive errors.
+
+txerrs - Retrieves total transmission errors.
+\}
+
+.if 0 \{
+shutdown - Metric that is sent if the machine was recently shutdown gracefully.
+\}
+
+Metric modules are searched for in the
+.B Cerebro
+package library directory, /usr/lib64/cerebro.
+
+.SH "MONITOR MODULES"
+
+Monitor modules provide a way for additional tasks to be executed done
+while monitoring some metric.  For example, if logging to a database
+is required for some unique metric handled by a metric module, a
+monitoring module could be written to log that data to database
+whenever a packet with that metric is read.
+
+The following monitoring modules are distributed:
+
+No monitoring modules are built.
+
+Monitor modules are searched for in the
+.B Cerebro
+package library directory, /usr/lib64/cerebro.
+
+.SH "EVENT MODULES"
+
+Event modules provide a way for events to be generated when certain
+monitored events occur.  This allows the user to program tools to
+only react when a monitored event occurs.  For example, a tool
+may wish to perform an action only after a node has been confirmed
+to be down.
+
+The following event modules are distributed:
+
+updown - Sends event notifications when cluster nodes go up or down
+
+Event modules are searched for in the
+.B Cerebro
+package library directory, /usr/lib64/cerebro.
+
+.SH "SEE ALSO"
+libcerebro(3), 
+cerebro_module_devel(3),
+cerebro.conf(5)

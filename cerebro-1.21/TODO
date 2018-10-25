@@ -1,0 +1,62 @@
+Portability
+- IPv6
+- Multicast
+
+Future Features
+- controller
+  - allow access through netowrk?
+  - limit host connections based on host list or subnet
+  - user/password limited access?
+  - munge based access?
+
+- controller/access rights
+  - need some security stuff
+
+- listener
+  - limit data receiving based on host list or subnet
+  - allow mixed listening
+    i.e. accept heartbeats from nodes in genders database and
+         nodes on a specific subnet. Would be useful for BGL.
+
+- Malloc looping
+  - so can try to avoid dieing on low memory conditions
+    (i.e. before the linux oom killer finishes its job)
+
+- iterate through all config modules, exit after one succeeds.  If
+  none succeed, use default.
+
+Enhancements
+- Should pass config to modules so they can configure/setup 
+  based on various conditions.
+- need way to send functions/pointers/etc. stuff between modules
+  without keeping on adding functions.
+- logging/error output/something facility for modules
+
+Reducements?
+- remove genders config module?  Too much at the end of the day.
+
+Module Extra Stuff
+- signal or polling to see if there are new modules to load
+- retry loading of previously failed modules
+  - metric
+  - monitoring
+  - event
+- don't fail if mysql connection fails in monitoring modules
+- support exclude option on all modules
+
+TCP connections instead of UDP for metric monitoring
+
+extra tag mechanism
+- add extra tag/mark/key mechanism to differentiate same metric name
+  from same node.
+
+preserve stats across cerebro restart
+- to allow more HA like services to exist
+- i.e. trent's idea to have cerebro monitor things so nodes no to
+  auto-config/auto-restart/etc.
+
+synchronize heartbeats
+- perhaps on exact time schedule
+ 
+Specs:
+- cerebro.spec.in - find better way to do restarts

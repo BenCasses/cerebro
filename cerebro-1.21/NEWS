@@ -1,0 +1,109 @@
+This file describes changes in recent versions of cerebro. It
+primarily documents those changes that are of interest to users and
+admins.
+
+Changes in cerebro-1.19-1
+===========================
+ -- Fix LSB compliance with cerebrod init script.
+ -- Fix chkconfig end priority.
+
+Changes in cerebro-1.18-1
+===========================
+ -- Fix segfault corner case when non-resolving hostname passed into
+    libcerebro.
+
+Changes in cerebro-1.17-1
+===========================
+ -- Support cerebrod_monitor_module_exclude,
+    cerebrod_event_module_exclude, and
+    cerebrod_gettimeofday_workaround options.
+
+Changes in cerebro-1.16-1
+===========================
+ -- Limit debug output in cerebrod only when running in the
+    foreground.
+ 
+Changes in cerebro-1.15-1
+===========================
+ -- Allow -d and -c in production builds of cerebrod.
+ -- Allow debug flags in cerebro.conf in production builds of cerebro.
+
+Changes in cerebro-1.14-1
+===========================
+ -- Various documentation updates.
+
+Changes in cerebro-1.13-1
+===========================
+ -- Fix portability bug for 32 bit vs 64 bit machines.
+ -- Fix build issues for RHEL6.
+ -- Various documentation updates.
+
+Changes in cerebro-1.12-1
+===========================
+ -- Increase verbosity of error logging to aid in debugging.
+
+Changes in cerebro-1.11-1
+===========================
+ -- Include cerebro.conf template by default.
+
+Changes in cerebro-1.10-1
+===========================
+ -- Fix corner cases with event modules specifying multiple events.
+ -- Fix documentation typos.
+ -- Various minor bug fixes.
+
+Changes in cerebro-1.9-1
+===========================
+ -- Do not enable cerebrod daemon by default.
+
+Changes in cerebro-1.8-1
+===========================
+ -- Fix spec file build issue.
+
+Changes in cerebro-1.7-1
+===========================
+ -- Fix cerebrod race/crash corner case.
+
+Changes in cerebro-1.6-1
+===========================
+ -- Fix cerebrod initialization race.
+ -- Fix cerebrod error output messages.
+ -- Fix config file parsing corner case.
+ -- Fix documentation typos.
+
+Changes in cerebro-1.5-1
+===========================
+ -- Fix mem-corruption bug.
+
+Changes in cerebro-1.4-1
+===========================
+ -- Various bug fixes.
+
+Changes in cerebro-1.3-1
+===========================
+ -- Redo configuration file format for message listening and speaking.
+ -- Support message forwarding.
+ -- Support module versioning.
+
+Changes in cerebro-1.2-1
+===========================
+ -- Documentation updates
+
+Changes in cerebro-1.1-1
+===========================
+ -- Allow cerebro to work on multiple subnets.
+ -- Added load average, memory, and network traffic metric modules.
+ -- Support event based monitoring.
+ -- Various bug fixes.
+
+Changes in cerebro-1.0-4
+===========================
+ -- Added graceful shutdown metric module.
+ -- Allow monitor modules to support multiple metrics.
+ -- Various bug fixes.
+
+Changes in cerebro-1.0-1
+===========================
+ -- Initial Release
+
+$Id: NEWS,v 1.17 2010-06-01 21:01:37 chu11 Exp $
