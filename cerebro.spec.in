@@ -6,7 +6,6 @@ Summary: Cerebro cluster monitoring tools and libraries
 Group: System Environment/Base
 License: GPL
 Source: @PROJECT@-@VERSION@.tar.gz
-BuildRoot: %{_tmppath}/@PROJECT@-@VERSION@
 
 BuildRequires: systemd
 Requires: systemd
@@ -142,10 +141,10 @@ Event module to monitor node up/down.
            --with-systemdsystemunitdir=%{_unitdir}
 make 
 
-%pretrans
-# stop cerebro before modification, remember if it was running
-if systemctl status cerebrod | grep running; then
-        touch %{_tmppath}/cerebrod_restart_sentinel_file
+%pre
+# stop cerebro before upgrade, remember if it was running
+if [ $1 -gt  1 ] && [ systemctl status cerebrod | grep running ]; then
+        touch %{_localstatedir}/cerebrod_restart_sentinel_file
         systemctl stop cerebrod
 fi
 
@@ -234,11 +233,9 @@ DESTDIR="$RPM_BUILD_ROOT" make install
 %{_libdir}/cerebro/*cerebro_event_updown.*
 %endif
 
-%posttrans
+%post
 # do we need to restart it?
-if [ -f %{_tmppath}/cerebrod_restart_sentinel_file ]; then
-        systemctl daemon-reload
-        systemctl enable cerebrod
+if [ $1 -gt  1 ] && [ -f %{_localstatedir}/cerebrod_restart_sentinel_file ]; then
         systemctl start cerebrod
-        rm %{_tmppath}/cerebrod_restart_sentinel_file
+        rm %{_localstatedir}/cerebrod_restart_sentinel_file
 fi
