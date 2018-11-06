@@ -27,7 +27,6 @@ Requires: /bin/sh
 %description
 Cerebro is a collection of cluster monitoring tools and libraries.
 
-
 %if %{?_with_debug:1}%{!?_with_debug:0}
 %define _enable_debug --enable-debug
 %endif
@@ -141,13 +140,6 @@ Event module to monitor node up/down.
            --with-systemdsystemunitdir=%{_unitdir}
 make 
 
-%pre
-# stop cerebro before upgrade, remember if it was running
-if [ $1 -gt  1 ] && [ systemctl status cerebrod | grep running ]; then
-        touch %{_localstatedir}/cerebrod_restart_sentinel_file
-        systemctl stop cerebrod
-fi
-
 %install
 rm -rf $RPM_BUILD_ROOT
 DESTDIR="$RPM_BUILD_ROOT" make install
@@ -235,7 +227,6 @@ DESTDIR="$RPM_BUILD_ROOT" make install
 
 %post
 # do we need to restart it?
-if [ $1 -gt  1 ] && [ -f %{_localstatedir}/cerebrod_restart_sentinel_file ]; then
-        systemctl start cerebrod
-        rm %{_localstatedir}/cerebrod_restart_sentinel_file
+if [ $1 -ge  1 ]; then
+        systemctl try-restart cerebrod
 fi
